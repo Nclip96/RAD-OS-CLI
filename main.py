@@ -3,19 +3,20 @@ import webview
 import subprocess
 import json
 import time
+import shutil
 
-if not os.path.exists('tour.py'): # creates the tour.py file (tour.py is created here to keep the files required to download as low as possible.)
+if not os.path.exists('tour.py'):
     with open('tour.py', 'w') as f:
         f.write('import time\n')
         f.write('print("Welcome to RAD OS! Would you like to take a tour? (y/n)")\n')
-        f.write('time.sleep(0.1)\n')
+        f.write('time.sleep(0.01)\n')
         f.write('tour = input()\n')
         f.write('if tour == "y":\n')
         f.write('    time.sleep(0.1)\n')
         f.write('    print("RAD OS is a simple command-line operating system with basic file management and web browsing capabilities.")\n')
         f.write('    time.sleep(0.1)\n')
         f.write('    print("You can use commands like \'browse duckduckgo\', \'view files\', \'cat <filename>\', and more!")\n')
-        f.write('    time.sleep(0.1\n)')
+        f.write('    time.sleep(0.1)\n')
         f.write('    print("Type \'help\' to see a list of available commands.")\n')
         f.write('    time.sleep(0.1)\n')
         f.write('    print("Enjoy your experience with RAD OS!")\n')
@@ -24,37 +25,197 @@ if not os.path.exists('tour.py'): # creates the tour.py file (tour.py is created
         f.write('    time.sleep(0.1)\n')
         f.write('    print("Tour has been skipped. Enjoy your experience with RAD OS!")\n')
 
-if not os.path.exists('test.txt'): # creates a test file for testing commands that edit/read files.
+with open('snake.py', 'w', encoding='utf-8') as f:
+    f.write('import pygame\n')
+    f.write('import random\n')
+    f.write('import sys\n')
+    f.write('\n')
+    f.write('print("LAUNCHING SNAKE. GAME CREATED WITH PYGAME.")')
+    f.write('SCREEN_WIDTH = 600\n')
+    f.write('SCREEN_HEIGHT = 400\n')
+    f.write('BLOCK_SIZE = 20\n')
+    f.write('FPS = 10\n')
+    f.write('\n')
+    f.write('WHITE = (255, 255, 255)\n')
+    f.write('BLACK = (0, 0, 0)\n')
+    f.write('GREEN = (0, 255, 0)\n')
+    f.write('RED = (255, 0, 0)\n')
+    f.write('\n')
+    f.write('class Snake:\n')
+    f.write('    def __init__(self):\n')
+    f.write('        self.body = [(100, 100), (80, 100), (60, 100)]\n')
+    f.write('        self.direction = (BLOCK_SIZE, 0)\n')
+    f.write('        self.growing = False\n')
+    f.write('\n')
+    f.write('    def move(self):\n')
+    f.write('        head_x, head_y = self.body[0]\n')
+    f.write('        delta_x, delta_y = self.direction\n')
+    f.write('        new_head = (head_x + delta_x, head_y + delta_y)\n')
+    f.write('        self.body = [new_head] + self.body\n')
+    f.write('        if not self.growing:\n')
+    f.write('            self.body.pop()\n')
+    f.write('        else:\n')
+    f.write('            self.growing = False\n')
+    f.write('\n')
+    f.write('    def grow(self):\n')
+    f.write('        self.growing = True\n')
+    f.write('\n')
+    f.write('    def set_direction(self, direction):\n')
+    f.write('        opposite_direction = (-self.direction[0], -self.direction[1])\n')
+    f.write('        if direction != opposite_direction:\n')
+    f.write('            self.direction = direction\n')
+    f.write('\n')
+    f.write('    def check_collision(self):\n')
+    f.write('        head_x, head_y = self.body[0]\n')
+    f.write('        if head_x < 0 or head_x >= SCREEN_WIDTH or head_y < 0 or head_y >= SCREEN_HEIGHT:\n')
+    f.write('            return True\n')
+    f.write('        if self.body[0] in self.body[1:]:\n')
+    f.write('            return True\n')
+    f.write('        return False\n')
+    f.write('\n')
+    f.write('class Food:\n')
+    f.write('    def __init__(self):\n')
+    f.write('        self.position = (0, 0)\n')
+    f.write('        self.spawn()\n')
+    f.write('\n')
+    f.write('    def spawn(self):\n')
+    f.write('        x = random.randint(0, (SCREEN_WIDTH - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE\n')
+    f.write('        y = random.randint(0, (SCREEN_HEIGHT - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE\n')
+    f.write('        self.position = (x, y)\n')
+    f.write('\n')
+    f.write('    def draw(self, screen):\n')
+    f.write('        pygame.draw.rect(screen, RED, pygame.Rect(self.position[0], self.position[1], BLOCK_SIZE, BLOCK_SIZE))\n')
+    f.write('\n')
+    f.write('class Game:\n')
+    f.write('    def __init__(self):\n')
+    f.write('        pygame.init()\n')
+    f.write('        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))\n')
+    f.write('        pygame.display.set_caption(\'Snake Game\')\n')
+    f.write('        self.clock = pygame.time.Clock()\n')
+    f.write('        self.snake = Snake()\n')
+    f.write('        self.food = Food()\n')
+    f.write('        self.score = 0\n')
+    f.write('        self.running = True\n')
+    f.write('\n')
+    f.write('    def handle_events(self):\n')
+    f.write('        for event in pygame.event.get():\n')
+    f.write('            if event.type == pygame.QUIT:\n')
+    f.write('                pygame.quit()\n')
+    f.write('                sys.exit()\n')
+    f.write('            elif event.type == pygame.KEYDOWN:\n')
+    f.write('                if event.key == pygame.K_UP:\n')
+    f.write('                    self.snake.set_direction((0, -BLOCK_SIZE))\n')
+    f.write('                elif event.key == pygame.K_DOWN:\n')
+    f.write('                    self.snake.set_direction((0, BLOCK_SIZE))\n')
+    f.write('                elif event.key == pygame.K_LEFT:\n')
+    f.write('                    self.snake.set_direction((-BLOCK_SIZE, 0))\n')
+    f.write('                elif event.key == pygame.K_RIGHT:\n')
+    f.write('                    self.snake.set_direction((BLOCK_SIZE, 0))\n')
+    f.write('\n')
+    f.write('    def update(self):\n')
+    f.write('        self.snake.move()\n')
+    f.write('        if self.snake.body[0] == self.food.position:\n')
+    f.write('            self.snake.grow()\n')
+    f.write('            self.food.spawn()\n')
+    f.write('            self.score += 1\n')
+    f.write('            if self.score % 5 == 0:\n')
+    f.write('                global FPS\n')
+    f.write('                FPS += 2\n')
+    f.write('        if self.snake.check_collision():\n')
+    f.write('            self.running = False\n')
+    f.write('\n')
+    f.write('    def draw_elements(self):\n')
+    f.write('        self.screen.fill(BLACK)\n')
+    f.write('        for segment in self.snake.body:\n')
+    f.write('            pygame.draw.rect(self.screen, GREEN, pygame.Rect(segment[0], segment[1], BLOCK_SIZE, BLOCK_SIZE))\n')
+    f.write('        self.food.draw(self.screen)\n')
+    f.write('        self.draw_score()\n')
+    f.write('\n')
+    f.write('    def draw_score(self):\n')
+    f.write('        font = pygame.font.Font(None, 36)\n')
+    f.write('        text = font.render(f\'Score: {self.score}\', True, WHITE)\n')
+    f.write('        self.screen.blit(text, (10, 10))\n')
+    f.write('\n')
+    f.write('    def run(self):\n')
+    f.write('        while self.running:\n')
+    f.write('            self.handle_events()\n')
+    f.write('            self.update()\n')
+    f.write('            self.draw_elements()\n')
+    f.write('            pygame.display.flip()\n')
+    f.write('            self.clock.tick(FPS)\n')
+    f.write('        self.game_over()\n')
+    f.write('\n')
+    f.write('    def game_over(self):\n')
+    f.write('        self.screen.fill(BLACK)\n')
+    f.write('        font = pygame.font.Font(None, 48)\n')
+    f.write('        text = font.render(\'Game Over\', True, WHITE)\n')
+    f.write('        self.screen.blit(text, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 - 24))\n')
+    f.write('        score_text = font.render(f\'Score: {self.score}\', True, WHITE)\n')
+    f.write('        self.screen.blit(score_text, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 24))\n')
+    f.write('        pygame.display.flip()\n')
+    f.write('        pygame.time.wait(2000)\n')
+    f.write('        pygame.quit()\n')
+    f.write('        sys.exit()\n')
+    f.write('\n')
+    f.write('if __name__ == "__main__":\n')
+    f.write('    game = Game()\n')
+    f.write('    game.run()\n')
+
+if not os.path.exists('test.txt'):
     with open('test.txt', 'w') as f:
         f.write('Hello World!')
 
-def ensure_data_json(): # creates the main json file for storing simple things that need to be remembered by the OS. If data.json is deleted, it won't break anything, but it will reset the OS state.
+def ensure_data_json():
     if not os.path.exists('data.json'):
         with open('data.json', 'w') as f:
-            json.dump({'TourComplete': False,}, f)
+            json.dump({'TourComplete': False, 'Password': None,}, f)
 
 ensure_data_json()
 
 with open('data.json', 'r') as file:
     data = json.load(file)
-    if not data.get('TourComplete'):
-        subprocess.run(['python', 'tour.py'])
-        data['TourComplete'] = True
-        with open('data.json', 'w') as file:
-            json.dump(data, file)
+
+# Run tour once
+if not data.get('TourComplete'):
+    subprocess.run(['python', 'tour.py'])
+    data['TourComplete'] = True
+    with open('data.json', 'w') as f:
+        json.dump(data, f)
+
+# Ensure a system password exists
+if data.get('Password') is None:
+    password = input("Please enter a system password: ")
+    data['Password'] = password
+    with open('data.json', 'w') as f:
+        json.dump(data, f)
+    print("Thank you! Launching RAD OS...")
+    time.sleep(1)
+    print("\033c", end="")
+else:
+    enteredpassword = input("Please Enter Your Password: ")
+    if data.get('Password') == enteredpassword:
+        print("Thank you! Launching RAD OS...")
+        time.sleep(1)
+        print("\033c", end="")
+    else:
+        print("Incorrect. Session Terminated.")
+        while True:
+            time.sleep(5)
 
 
-while True: # duckduckgo browsing command
+
+
+while True:
     command = input("RAD OS-+> ")
     if command == "browse duckduckgo":
         webview.create_window("Browser", "https://duckduckgo.com", width=800, height=600)
         webview.start()
 
-    elif command == "browse google":  # google browsing command
+    elif command == "browse google":
         webview.create_window("Browser", "https://google.com", width=800, height=600)
         webview.start()
 
-    elif command == "browse":  # browses with your default browser
+    elif command == "browse":
         with open('data.json', 'r') as file:
             data = json.load(file)
             fav_browser = data.get('FavBrowser', 'duckduckgo')
@@ -70,53 +231,61 @@ while True: # duckduckgo browsing command
                 print("No favorite browser set. Please set a favorite browser.")
         webview.start()
 
-    elif command == "browse bing":  # ugly bing browsing command
+    elif command == "browse bing":
         webview.create_window("Browser", "https://bing.com", width=800, height=600)
         webview.start()
 
-    elif command == "browse yahoo":  # yahoo browsing command
+    elif command == "browse yahoo":
         webview.create_window("Browser", "https://yahoo.com", width=800, height=600)
         webview.start()
 
-    elif command == "launch proxy":  # launches a web proxy because why not
+    elif command == "launch proxy":
         webview.create_window("Proxy", "https://www.croxyproxy.com", width=800, height=600)
         webview.start()
 
-    elif command == "view files":  # shows all files in directory (The "OS" is really just a basic program. It can not browse other directories.)
+    elif command == "view files":
         print("Files in RAD OS filesystem:")
         for filename in os.listdir():
             print(f"  {filename}")
 
-    elif command.startswith("cat "):  # the command we all know and love, reads out the file put next to it.
+    elif command.startswith("cat "):
         filename = command[4:].strip()
         if filename and os.path.isfile(filename):
-            with open(filename, 'r', encoding='utf-8') as f:
-                print(f.read())
+            if not filename == "data.json" or "tour.py":
+                with open(filename, 'r', encoding='utf-8') as f:
+                    print(f.read())
+            
+            else:
+                print("File can not be read for security reasons.")
+        
         else:
             print("File not found.")
 
-    elif command.startswith("write "): # cat but it creates instead of reading.
+    elif command.startswith("write "):
         parts = command[6:].split(" ", 1)
         if len(parts) == 2:
             filename, content = parts
             with open(filename, 'w', encoding='utf-8') as f:
                 f.write(content)
 
-    elif command.startswith("edit "): # edits upon files already written
+    elif command.startswith("edit "):
         filename = command[5:].strip()
         if filename and os.path.isfile(filename):
-            with open(filename, 'r+', encoding='utf-8') as f:
-                print(f"Current content of {filename}:")
-                print(f.read())
-                new_content = input("Enter new content: ")
-                f.seek(0)
-                f.write(new_content)
-                f.truncate()
+            if not filename == "data.json" or "tour.py":
+                with open(filename, 'r+', encoding='utf-8') as f:
+                    print(f"Current content of {filename}:")
+                    print(f.read())
+                    new_content = input("Enter new content: ")
+                    f.seek(0)
+                    f.write(new_content)
+                    f.truncate()
+            else:
+                print("File can not be edited for security reasons")
 
-    elif command == "clear": # clears the terminal. things can get cluttered!
+    elif command == "clear":
         print("\033c", end="")
 
-    elif command == "help":  # shows all available commands.
+    elif command == "help":
         print("Available commands:")
         time.sleep(0.1)
         print("  browse duckduckgo - Open DuckDuckGo in a browser window")
@@ -133,7 +302,7 @@ while True: # duckduckgo browsing command
         time.sleep(0.1)
         print("  cat <filename> - Display the contents of a file")
         time.sleep(0.1)
-        print("  write <filename> <content> - Write content to a file")
+        print("  write <filename> <content> - Create a new file and write content to it")
         time.sleep(0.1)
         print("  edit <filename> - Edit the contents of a file")
         time.sleep(0.1)
@@ -154,7 +323,7 @@ while True: # duckduckgo browsing command
         print("  python execute <file> - Run a Python File")
         time.sleep(0.1)
 
-    elif command.startswith("set browser"):  # sets the default browser
+    elif command.startswith("set browser"):
         bparts = command.split()
         if len(bparts) == 3:
             browser = bparts[2].strip()
@@ -170,7 +339,7 @@ while True: # duckduckgo browsing command
         else:
             print("Invalid browser choice.")
 
-    elif command.startswith("direct browse"): # launches a URL directly without needing to search for it.
+    elif command.startswith("direct browse"):
         parts = command.split(maxsplit=2)
         if len(parts) >= 3:
             url = parts[2].strip()
@@ -188,7 +357,7 @@ while True: # duckduckgo browsing command
             except Exception as e:
                 print(f"Failed to open URL: {e}")
 
-    elif command == "sysinfo":  # displays system info.
+    elif command == "sysinfo":
         print("RAD OS System Information:")
         time.sleep(0.1)
         print(f"  Current Working Directory: {os.getcwd()}")
@@ -198,25 +367,25 @@ while True: # duckduckgo browsing command
         print(f"  Python Version: {os.sys.version}")
         time.sleep(0.1)
 
-    elif command == "uptime": # the most broken command. I dont know what it does.
+    elif command == "uptime":
         print("RAD OS Uptime:")
         with open('/proc/uptime', 'r') as f:
             uptime_seconds = float(f.readline().split()[0])
             print(f"RAD OS Uptime: {uptime_seconds / 3600:.2f} hours")
     
-    elif command == "exit": # exits the terminal
+    elif command == "exit":
         confirm = input("Are you sure you want to exit RAD OS? (y/n): ")
         if confirm == "y":
             print("Exiting RAD OS...")
             break
 
-    elif command == "cpu temp": # checks the CPU temp. (untested)
+    elif command == "cpu temp":
         result = subprocess.run(['vcgencmd', 'measure_temp'], capture_output=True, text=True)
         print(f"Pi CPU Temperature: {result.stdout.strip()}")
 
-    elif command == "debug help": # shows debug commands. 
+    elif command == "debug help":
         password = input("Enter debug password: ")
-        if password == "RADOSDEBUG":
+        if password == data["Password"]:
             print("Debug help information:")
             time.sleep(0.1)
             print("  debug help - Show debug help information")
@@ -226,15 +395,14 @@ while True: # duckduckgo browsing command
             print("  debug install <package> - install a python package (WARNING: This will download and install a package from the internet!)")
             time.sleep(0.1)
 
-    elif command == "debug reset": # resets the OS by deleting all files except this.
+    elif command == "debug reset":
         time.sleep(0.1)
         password = input("Enter debug password: ")
-        if password == "RADOSDEBUG":
+        if password == data["Password"]:
             time.sleep(0.1)
-            confirm = input("Are you sure you want to reset the entire RAD OS system? This will delete all files and reset the system! (y/n): ")
-            if confirm == "y":
-                for filename in os.listdir():
-                    os.remove(filename)
+            confirm = input("Please enter debug password again for confirmation: ")
+            if confirm == data["Password"]:
+                shutil.rmtree()
 
                 print("RAD OS system has been reset.")
             else:
@@ -242,24 +410,23 @@ while True: # duckduckgo browsing command
         else:
             print("Incorrect debug password.")
 
-    elif command.startswith("debug install "): # runs pip install to install python packages.
+    elif command.startswith("debug install "):
         password = input("Enter debug password: ")
-        if password == "RADOSDEBUG":
+        if password == password:
             package = command[14:].strip()
             if package:
-                print(f"Installing package: {package}")
-                os.system(f"pip install {package}")
+                subprocess.run(['pip', 'install', package], check=True)
                 print(f"Package {package} installed successfully.")
             else:
                 print("No package specified.")
         else:
             print("Incorrect debug password.")
 
-    elif command.startswith("python execute"): # lets you execute python. if you run this, you clearly have python, so you can run more python with python!
+    elif command.startswith("python execute"):
         filename = command[15:].strip()
         if filename:
             if os.path.exists(filename):
-                os.system(f"python {filename}")
+                subprocess.run(['python', filename], check=False)
             else:
                 print(f"File '{filename}' not found.")
         else:
