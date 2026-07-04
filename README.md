@@ -5,7 +5,7 @@ EARLY ROADMAP:
 
 v0.1 - Publish CLI ✔
 
-v0.2 - Fix issues with security
+v0.2 - Fix issues with security ✔
 
 v0.3 - Create bare minimum graphical interface
 
