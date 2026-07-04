@@ -3,7 +3,7 @@ Python "Operating System" that functions as a terminal with web browsing capabil
 
 EARLY ROADMAP:
 
-v0.1 - Publish CLI
+v0.1 - Publish CLI ✔
 
 v0.2 - Fix issues with efficiency and security
 
