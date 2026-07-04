@@ -1,11 +1,16 @@
-import os
+import os # module imports
+os.system("pip install webview")
+os.system("pip install subprocess")
+os.system("pip install json")
+os.system("pip install time")
+os.system("pip install shutil")
 import webview
 import subprocess
 import json
 import time
 import shutil
 
-if not os.path.exists('tour.py'):
+if not os.path.exists('tour.py'): # creates the tour script if it doesn't exist.
     with open('tour.py', 'w') as f:
         f.write('import time\n')
         f.write('print("Welcome to RAD OS! Would you like to take a tour? (y/n)")\n')
@@ -25,7 +30,7 @@ if not os.path.exists('tour.py'):
         f.write('    time.sleep(0.1)\n')
         f.write('    print("Tour has been skipped. Enjoy your experience with RAD OS!")\n')
 
-with open('snake.py', 'w', encoding='utf-8') as f:
+with open('snake.py', 'w', encoding='utf-8') as f:  # creates the snake game script if it doesn't exist.
     f.write('import pygame\n')
     f.write('import random\n')
     f.write('import sys\n')
@@ -161,29 +166,27 @@ with open('snake.py', 'w', encoding='utf-8') as f:
     f.write('    game = Game()\n')
     f.write('    game.run()\n')
 
-if not os.path.exists('test.txt'):
+if not os.path.exists('test.txt'):  # creates the test.txt file if it doesn't exist.
     with open('test.txt', 'w') as f:
         f.write('Hello World!')
 
-def ensure_data_json():
+def ensure_data_json():  # defines ensure json, which writes the actual data.json file.
     if not os.path.exists('data.json'):
         with open('data.json', 'w') as f:
             json.dump({'TourComplete': False, 'Password': None,}, f)
 
 ensure_data_json()
 
-with open('data.json', 'r') as file:
+with open('data.json', 'r') as file:  # reads data.json and sets variable data to the json file.
     data = json.load(file)
 
-# Run tour once
-if not data.get('TourComplete'):
+if not data.get('TourComplete'):  # runs the tour and tells the json that the tour has been completed so it doesnt run again at startup
     subprocess.run(['python', 'tour.py'])
     data['TourComplete'] = True
     with open('data.json', 'w') as f:
         json.dump(data, f)
 
-# Ensure a system password exists
-if data.get('Password') is None:
+if data.get('Password') is None: # asks the user to set system password. the password is then stored in data.json.
     password = input("Please enter a system password: ")
     data['Password'] = password
     with open('data.json', 'w') as f:
@@ -192,30 +195,30 @@ if data.get('Password') is None:
     time.sleep(1)
     print("\033c", end="")
 else:
-    enteredpassword = input("Please Enter Your Password: ")
+    enteredpassword = input("Please Enter Your Password: ") # asks the user to enter password.
     if data.get('Password') == enteredpassword:
         print("Thank you! Launching RAD OS...")
         time.sleep(1)
         print("\033c", end="")
     else:
-        print("Incorrect. Session Terminated.")
+        print("Incorrect. Session Terminated.") # kills the session if the password is wrong. Remember. Your. Password.
         while True:
             time.sleep(5)
 
 
 
 
-while True:
-    command = input("RAD OS-+> ")
-    if command == "browse duckduckgo":
+while True: # start of the actual CLI.
+    command = input("RAD OS-+> ") # input thing.
+    if command == "browse duckduckgo": # this command launches duckduckgo.
         webview.create_window("Browser", "https://duckduckgo.com", width=800, height=600)
         webview.start()
 
-    elif command == "browse google":
+    elif command == "browse google": # this command launches google
         webview.create_window("Browser", "https://google.com", width=800, height=600)
         webview.start()
 
-    elif command == "browse":
+    elif command == "browse": # this command takes your default browser, and launches that. (favorite browser must be set with the 'set browser' command.)
         with open('data.json', 'r') as file:
             data = json.load(file)
             fav_browser = data.get('FavBrowser', 'duckduckgo')
@@ -243,12 +246,12 @@ while True:
         webview.create_window("Proxy", "https://www.croxyproxy.com", width=800, height=600)
         webview.start()
 
-    elif command == "view files":
+    elif command == "view files": # this command views the files on the OS directory. (The OS is meant to function only in one directory.)
         print("Files in RAD OS filesystem:")
         for filename in os.listdir():
             print(f"  {filename}")
 
-    elif command.startswith("cat "):
+    elif command.startswith("cat "): # this command reads a file.
         filename = command[4:].strip()
         if filename and os.path.isfile(filename):
             if not filename == "data.json" or "tour.py":
@@ -261,31 +264,42 @@ while True:
         else:
             print("File not found.")
 
-    elif command.startswith("write "):
-        parts = command[6:].split(" ", 1)
-        if len(parts) == 2:
-            filename, content = parts
+    elif command.startswith("write "): # this command creates a file and lets you write data to it.
+        filename = command[6:].strip()
+        if filename:
+            print("Enter content (type 'END' on a new line to finish):")
+            lines = []
+            while True:
+                line = input()
+                if line == "END":
+                    break
+                lines.append(line)
             with open(filename, 'w', encoding='utf-8') as f:
-                f.write(content)
+                f.write('\n'.join(lines))
 
-    elif command.startswith("edit "):
+    elif command.startswith("edit "): # this command edits a file that already exist.
         filename = command[5:].strip()
         if filename and os.path.isfile(filename):
             if not filename == "data.json" or "tour.py":
-                with open(filename, 'r+', encoding='utf-8') as f:
+                with open(filename, 'r', encoding='utf-8') as f:
                     print(f"Current content of {filename}:")
                     print(f.read())
-                    new_content = input("Enter new content: ")
-                    f.seek(0)
-                    f.write(new_content)
-                    f.truncate()
+                print("Enter new content (type 'END' on a new line to finish):")
+                lines = []
+                while True:
+                    line = input()
+                    if line == "END":
+                        break
+                    lines.append(line)
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write('\n'.join(lines))
             else:
                 print("File can not be edited for security reasons")
 
-    elif command == "clear":
+    elif command == "clear": # this command clears the terminal
         print("\033c", end="")
 
-    elif command == "help":
+    elif command == "help": # this command shows an explanation of all commands.
         print("Available commands:")
         time.sleep(0.1)
         print("  browse duckduckgo - Open DuckDuckGo in a browser window")
@@ -312,8 +326,6 @@ while True:
         time.sleep(0.1)
         print("  sysinfo - Show system information")
         time.sleep(0.1)
-        print("  uptime - Show RAD OS uptime")
-        time.sleep(0.1)
         print("  debug help - Show debug help information (requires password)")
         time.sleep(0.1)
         print("  set browser <browser> - Set favorite browser (duckduckgo/google/bing/yahoo)")
@@ -323,7 +335,7 @@ while True:
         print("  python execute <file> - Run a Python File")
         time.sleep(0.1)
 
-    elif command.startswith("set browser"):
+    elif command.startswith("set browser"): # this command sets the default browser.
         bparts = command.split()
         if len(bparts) == 3:
             browser = bparts[2].strip()
@@ -339,7 +351,7 @@ while True:
         else:
             print("Invalid browser choice.")
 
-    elif command.startswith("direct browse"):
+    elif command.startswith("direct browse"): # this command launches a URL directly.
         parts = command.split(maxsplit=2)
         if len(parts) >= 3:
             url = parts[2].strip()
@@ -357,7 +369,7 @@ while True:
             except Exception as e:
                 print(f"Failed to open URL: {e}")
 
-    elif command == "sysinfo":
+    elif command == "sysinfo": # this command shows the system info.
         print("RAD OS System Information:")
         time.sleep(0.1)
         print(f"  Current Working Directory: {os.getcwd()}")
@@ -366,24 +378,18 @@ while True:
         time.sleep(0.1)
         print(f"  Python Version: {os.sys.version}")
         time.sleep(0.1)
-
-    elif command == "uptime":
-        print("RAD OS Uptime:")
-        with open('/proc/uptime', 'r') as f:
-            uptime_seconds = float(f.readline().split()[0])
-            print(f"RAD OS Uptime: {uptime_seconds / 3600:.2f} hours")
     
-    elif command == "exit":
+    elif command == "exit": # this command exists RAD OS.
         confirm = input("Are you sure you want to exit RAD OS? (y/n): ")
         if confirm == "y":
             print("Exiting RAD OS...")
             break
 
-    elif command == "cpu temp":
+    elif command == "cpu temp": # this command checks the CPU temp.
         result = subprocess.run(['vcgencmd', 'measure_temp'], capture_output=True, text=True)
         print(f"Pi CPU Temperature: {result.stdout.strip()}")
 
-    elif command == "debug help":
+    elif command == "debug help": # this command shows debug commands.
         password = input("Enter debug password: ")
         if password == data["Password"]:
             print("Debug help information:")
@@ -395,7 +401,7 @@ while True:
             print("  debug install <package> - install a python package (WARNING: This will download and install a package from the internet!)")
             time.sleep(0.1)
 
-    elif command == "debug reset":
+    elif command == "debug reset": # this command resets all files.
         time.sleep(0.1)
         password = input("Enter debug password: ")
         if password == data["Password"]:
@@ -410,7 +416,7 @@ while True:
         else:
             print("Incorrect debug password.")
 
-    elif command.startswith("debug install "):
+    elif command.startswith("debug install "): # this command install python libraries.
         password = input("Enter debug password: ")
         if password == password:
             package = command[14:].strip()
@@ -422,7 +428,7 @@ while True:
         else:
             print("Incorrect debug password.")
 
-    elif command.startswith("python execute"):
+    elif command.startswith("python execute"): # this command executes a python script.
         filename = command[15:].strip()
         if filename:
             if os.path.exists(filename):
